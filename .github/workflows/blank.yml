@@ -37,7 +37,7 @@ jobs:
   get-ref-name:
     runs-on: ubuntu-latest
     outputs:
-      - ref: ${{ steps.ref.outputs.branch }}
+      ref: ${{ steps.ref.outputs.branch }}
     steps:
       - name: Get PR data
         id: ref
