@@ -69,6 +69,7 @@ jobs:
         shell: bash
   echo:
     runs-on: ubuntu-latest
+    needs: get
     steps:
       - run: echo ${{ needs.get.outputs.ref }}
   job1:
