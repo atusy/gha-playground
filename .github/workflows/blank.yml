@@ -63,14 +63,12 @@ jobs:
       - name: Get PR data
         id: ref
         run: |
-          echo "::set-output name=branch::$(
-            PR="$(echo $GITHUB_REF | sed -E -e 's?^refs/pull/([0-9]+)/merge$?\1?' )"
-            curl \
-              --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-              --header 'Accept: application/vnd.github.v3+json' \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR" \
-            | jq .head.ref
-          )"
+          curl \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'Accept: application/vnd.github.v3+json' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$( echo $GITHUB_REF | sed -E -e 's?^refs/pull/([0-9]+)/merge$?\1?' )" \
+          | jq .head.ref \
+          | sed -e 's/^/::set-output name=branch::/'
         shell: bash
   echo:
     runs-on: ubuntu-latest
