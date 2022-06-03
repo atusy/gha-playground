@@ -36,20 +36,23 @@ jobs:
   #         echo test, and deploy your project.
   get-ref-name:
     runs-on: ubuntu-latest
-    # outputs:
-    #   - ref: ${{ steps.ref.outputs.branch }}
+    outputs:
+      - ref: ${{ steps.ref.outputs.branch }}
     steps:
       - name: Get PR data
         id: ref
         run: |
-          echo "##[set-output name=branch;]$(
+          echo "::set-output name=branch::$(
             PR="$(echo $GITHUB_REF | sed -E -e 's?^refs/pull/([0-9]+)/merge$?\1?' )"
-            curl --request GET \
+            curl \
               --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
               --header 'Accept: application/vnd.github.v3+json' \
               "https://api.github.com/repos/${{ github.repository }}/pulls/$PR"
           )"
         shell: bash
-      - run: echo ${{ steps.ref.outputs.branch }}
-      - run: echo ${{ steps.ref.outputs.branch }} | jq .head.ref
+  echo-ref-name:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ needs.get-ref-name.outputs.ref }}
+
 
